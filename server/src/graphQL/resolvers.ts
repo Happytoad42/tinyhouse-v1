@@ -1,6 +1,7 @@
 import { IResolvers } from 'apollo-server-express';
 import { listings } from '../listings';
 
+// functions to run when cirresponding query is sent via graphQL, basically reducers
 export const resolvers: IResolvers = {
   Query: {
     listings: () => {
