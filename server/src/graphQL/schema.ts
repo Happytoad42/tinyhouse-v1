@@ -7,7 +7,7 @@ import {
   GraphQLNonNull,
   GraphQLList,
 } from 'graphql';
-import { listings } from './listings';
+import { listings } from '../listings';
 
 // Create custom  type fro listings object (just like in fake listings)
 const Listing = new GraphQLObjectType({
@@ -51,6 +51,7 @@ const mutation = new GraphQLObjectType({
             return listings.splice(i, 1)[0];
           }
         }
+        throw new Error('Failed to delete listing');
       },
     },
   },
