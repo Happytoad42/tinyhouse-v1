@@ -1,3 +1,6 @@
+/* eslint @typescript-eslint/no-var-requires: "off" */
+require('dotenv').config();
+
 import express, { Application } from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import { connectDatabase } from './database';
@@ -21,7 +24,7 @@ const mount = async (app: Application) => {
   server.applyMiddleware({ app, path: '/api' });
 
   // init the app on given port
-  app.listen(port);
+  app.listen(process.env.PORT);
 
   // for convinience
   console.log(`[app]: http://localhost:${port}`);
