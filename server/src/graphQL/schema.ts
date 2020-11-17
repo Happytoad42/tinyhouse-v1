@@ -57,5 +57,5 @@ const mutation = new GraphQLObjectType({
   },
 });
 
-// create a GraphQL schema with given actions
+// create a GraphQL schema with given requests
 export const schema = new GraphQLSchema({ query, mutation });

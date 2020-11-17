@@ -7,6 +7,7 @@ import { typeDefs, resolvers } from './graphQL';
 const port = 9000;
 
 const mount = async (app: Application) => {
+  // wait for db request to finish
   const db = await connectDatabase();
 
   // Init Apollo express server with given schema
@@ -24,9 +25,6 @@ const mount = async (app: Application) => {
 
   // for convinience
   console.log(`[app]: http://localhost:${port}`);
-
-  const listings = await db.listings.find({}).toArray();
-  console.log(listings);
 };
 
 mount(express());
