@@ -8,7 +8,7 @@ export interface Listing {
   price: number;
   numOfGuests: number;
   numOfBeds: number;
-  numOfBath: number;
+  numOfBaths: number;
   rating: number;
 }
 
