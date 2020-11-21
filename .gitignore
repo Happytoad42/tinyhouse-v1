@@ -13,6 +13,6 @@ server/build
 server/.env
 
 # other
-npm-debug.log*
+npm-debug.log*ы
 yarn-debug.log*
 yarn-error.log*

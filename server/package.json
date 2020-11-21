@@ -29,5 +29,6 @@
     "start": "nodemon src/index.ts",
     "build": "tsc -p  ./",
     "seed": "ts-node temp/seed.ts"
-  }
+  },
+  "proxy": "http://localhost:9000"
 }
