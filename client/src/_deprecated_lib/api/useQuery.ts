@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useReducer } from 'react';
+import { useEffect, useCallback, useReducer } from 'react';
 import { server } from './server';
 
 type State<TData> = {
@@ -45,9 +45,11 @@ export const useQuery = <TData = any>(query: string): QueryResult<TData> => {
       try {
         dispatch({ type: 'FETCH' });
         const { data, errors } = await server.fetch<TData>({ query });
+
         if (errors && errors.length) {
           throw new Error(errors[0].message);
         }
+
         dispatch({ type: 'FETCH_SUCCESS', payload: data });
       } catch (err) {
         dispatch({ type: 'FETCH_ERROR' });
