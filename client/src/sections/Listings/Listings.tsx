@@ -1,10 +1,6 @@
 import React from 'react';
-import { server, useQuery } from '../../lib/api';
-import {
-  DeleteLIstingData,
-  DeleteListingVariables,
-  ListingsData,
-} from './Types';
+import { useQuery, useMutation } from '../../lib/api';
+import { DeleteLIstingData, ListingsData } from './Types';
 
 const LISTINGS = `
   query Listings {
@@ -35,16 +31,16 @@ interface Props {
 }
 
 export const Listings = (props: Props) => {
-  const { data, loading, refecth, error } = useQuery<ListingsData>(LISTINGS);
+  const { data, loading, refetch, error } = useQuery<ListingsData>(LISTINGS);
 
-  const deleteListing = async (id: string) => {
-    await server.fetch<DeleteLIstingData, DeleteListingVariables>({
-      query: DELETE_LISTING,
-      variables: {
-        id,
-      },
-    });
-    refecth();
+  const [
+    deleteListing,
+    { loading: deleteListingLoading, error: deletelistingError },
+  ] = useMutation<DeleteLIstingData>(DELETE_LISTING);
+
+  const handledeleteListing = async (id: string) => {
+    await deleteListing({ id });
+    refetch();
   };
 
   const listings = data ? data.listings : null;
@@ -55,7 +51,7 @@ export const Listings = (props: Props) => {
         return (
           <li key={listing.id}>
             {listing.title}
-            <button onClick={() => deleteListing(listing.id)}>
+            <button onClick={() => handledeleteListing(listing.id)}>
               Delete Listing
             </button>
           </li>
@@ -72,10 +68,20 @@ export const Listings = (props: Props) => {
     return <h2>There was an error retrieving the data</h2>;
   }
 
+  const deleteListingLoadingMessage = deleteListingLoading ? (
+    <h4>Deleting...</h4>
+  ) : null;
+
+  const deleteListingErrorMessage = deletelistingError ? (
+    <h4>Cant delete a listing now. Try again later.</h4>
+  ) : null;
+
   return (
     <div>
       <h2>{props.title}</h2>
       {listingsList}
+      {deleteListingLoadingMessage}
+      {deleteListingErrorMessage}
     </div>
   );
 };
