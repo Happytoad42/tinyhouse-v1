@@ -1,6 +1,10 @@
 interface Body<TVariables> {
   query: string;
-  variables?:TVariables
+  variables?: TVariables;
+}
+
+interface Error {
+  message: string;
 }
 
 export const server = {
@@ -8,11 +12,15 @@ export const server = {
     const res = await fetch('/api', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify(body)
+      body: JSON.stringify(body),
     });
 
-    return res.json() as Promise< { data: TData }>;
-  }
-}
+    if (!res.ok) {
+      throw new Error('failed to fetch from server');
+    }
+
+    return res.json() as Promise<{ data: TData; errors: Error[] }>;
+  },
+};

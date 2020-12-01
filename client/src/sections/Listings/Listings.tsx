@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
-import { server } from '../../lib/api';
+import React from 'react';
+import { server, useQuery } from '../../lib/api';
 import {
-  Listing,
-  ListingsData,
   DeleteLIstingData,
   DeleteListingVariables,
+  ListingsData,
 } from './Types';
 
 const LISTINGS = `
@@ -36,12 +35,7 @@ interface Props {
 }
 
 export const Listings = (props: Props) => {
-  const [listings, setListings] = useState<Listing[] | null>(null);
-
-  const fetchListings = async () => {
-    const { data } = await server.fetch<ListingsData>({ query: LISTINGS });
-    setListings(data.listings);
-  };
+  const { data, loading, refecth, error } = useQuery<ListingsData>(LISTINGS);
 
   const deleteListing = async (id: string) => {
     await server.fetch<DeleteLIstingData, DeleteListingVariables>({
@@ -50,8 +44,10 @@ export const Listings = (props: Props) => {
         id,
       },
     });
-    fetchListings();
+    refecth();
   };
+
+  const listings = data ? data.listings : null;
 
   const listingsList = listings ? (
     <ul>
@@ -68,11 +64,18 @@ export const Listings = (props: Props) => {
     </ul>
   ) : null;
 
+  if (loading) {
+    return <h2>Loading...</h2>;
+  }
+
+  if (error) {
+    return <h2>There was an error retrieving the data</h2>;
+  }
+
   return (
     <div>
       <h2>{props.title}</h2>
       {listingsList}
-      <button onClick={fetchListings}>QueryListings</button>
     </div>
   );
 };
