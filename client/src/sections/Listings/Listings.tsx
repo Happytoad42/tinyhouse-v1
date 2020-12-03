@@ -1,11 +1,15 @@
 import React from 'react';
 import { gql } from 'apollo-boost';
 import { useQuery, useMutation } from 'react-apollo';
+import { Alert, Avatar, Button, Spin, List } from 'antd';
+import { ListingsSkeleton } from './components';
 import { Listings as ListingsData } from './__generated__/Listings';
 import {
   DeleteListing as DeleteListingData,
   DeleteListingVariables,
 } from './__generated__/DeleteListing';
+
+import './styles/Listings.css';
 
 const LISTINGS = gql`
   query Listings {
@@ -51,42 +55,58 @@ export const Listings = (props: Props) => {
   const listings = data ? data.listings : null;
 
   const listingsList = listings ? (
-    <ul>
-      {listings?.map((listing) => {
-        return (
-          <li key={listing.id}>
-            {listing.title}
-            <button onClick={() => handledeleteListing(listing.id)}>
-              Delete Listing
-            </button>
-          </li>
-        );
-      })}
-    </ul>
+    <List
+      itemLayout='horizontal'
+      dataSource={listings}
+      renderItem={(item) => (
+        <List.Item
+          actions={[
+            <Button type='primary' onClick={() => handledeleteListing(item.id)}>
+              Delete
+            </Button>,
+          ]}
+        >
+          <List.Item.Meta
+            title={item.title}
+            description={item.address}
+            avatar={<Avatar src={item.image} shape='square' size={48} />}
+          />
+        </List.Item>
+      )}
+    />
   ) : null;
 
   if (loading) {
-    return <h2>Loading...</h2>;
+    return (
+      <div className='listings'>
+        <ListingsSkeleton title={props.title} />
+      </div>
+    );
   }
 
   if (error) {
-    return <h2>There was an error retrieving the data</h2>;
+    return (
+      <div className='listings'>
+        <ListingsSkeleton title={props.title} error />
+      </div>
+    );
   }
 
-  const deleteListingLoadingMessage = deleteListingLoading ? (
-    <h4>Deleting...</h4>
-  ) : null;
-
-  const deleteListingErrorMessage = deletelistingError ? (
-    <h4>Cant delete a listing now. Try again later.</h4>
+  const deleteListingErrorAlert = deletelistingError ? (
+    <Alert
+      type='error'
+      message='Cannot delete listing, please try again later'
+      className='listings-alert'
+    />
   ) : null;
 
   return (
-    <div>
-      <h2>{props.title}</h2>
-      {listingsList}
-      {deleteListingLoadingMessage}
-      {deleteListingErrorMessage}
+    <div className='listings'>
+      <Spin spinning={deleteListingLoading}>
+        {deleteListingErrorAlert}
+        <h2>{props.title}</h2>
+        {listingsList}
+      </Spin>
     </div>
   );
 };
