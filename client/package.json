@@ -22,7 +22,6 @@
     "web-vitals": "^0.2.4"
   },
   "scripts": {
-    "prestart": "cp verifyTypeScriptSetup.js node_modules/react-scripts/scripts/utils",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
