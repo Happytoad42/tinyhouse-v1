@@ -13,12 +13,12 @@ export enum ListingType {
   House = 'HOUSE',
 }
 
-export interface BookingnIdexMonth {
+export interface BookingIdexMonth {
   [key: string]: boolean;
 }
 
 export interface BookingIndexYear {
-  [key: string]: BookingnIdexMonth;
+  [key: string]: BookingIdexMonth;
 }
 
 export interface BookingsIndex {

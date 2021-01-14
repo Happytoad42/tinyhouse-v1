@@ -81,7 +81,7 @@ const logInViaGoogle = async (
 
 export const viewerResolvers: IResolvers = {
   Query: {
-    authUrl: () => {
+    authUrl: (): string => {
       try {
         return Google.authUrl;
       } catch (error) {
@@ -118,7 +118,7 @@ export const viewerResolvers: IResolvers = {
         throw new Error(`Failed to log in: ${error}`);
       }
     },
-    logOut: () => {
+    logOut: (): Viewer => {
       try {
         return { didRequest: true };
       } catch (error) {
@@ -127,10 +127,10 @@ export const viewerResolvers: IResolvers = {
     },
   },
   Viewer: {
-    id: (viewer: Viewer) => {
-      return viewer._id ? true : undefined;
+    id: (viewer: Viewer): string | undefined => {
+      return viewer._id;
     },
-    hasWallet: (viewer: Viewer) => {
+    hasWallet: (viewer: Viewer): boolean | undefined => {
       return viewer.walletId ? true : undefined;
     },
   },
