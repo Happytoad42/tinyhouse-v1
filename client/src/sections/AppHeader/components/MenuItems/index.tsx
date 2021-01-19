@@ -1,25 +1,53 @@
 import { Avatar, Button, Menu } from 'antd';
-import { HomeOutlined, UserOutlined, LogoutOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
+import { useMutation } from 'react-apollo';
+import { HomeOutlined, UserOutlined, LogoutOutlined } from '@ant-design/icons';
+import { LOG_OUT } from '../../../../lib/graphql/mutations';
+import { LogOut as LogOutData } from '../../../../lib/graphql/mutations/LogOut/__generated__/LogOut';
+import {
+  displaySuccessNotification,
+  displayErrorMessage,
+} from '../../../../lib/utils';
 import { Viewer } from '../../../../lib/types';
 
 interface Props {
   viewer: Viewer;
+  setViewer: (viewer: Viewer) => void;
 }
 
 const { Item, SubMenu } = Menu;
 
-export const MenuItems = ({ viewer }: Props) => {
+export const MenuItems = ({ viewer, setViewer }: Props) => {
+  const [logOut] = useMutation<LogOutData>(LOG_OUT, {
+    onCompleted: (data) => {
+      if (data && data.logOut) {
+        setViewer(data.logOut);
+      }
+    },
+    onError: (error) => {
+      displayErrorMessage(`Log Out failed. Try again later.`);
+    },
+  });
+
+  const handleLogOut = () => {
+    logOut();
+    displaySuccessNotification('Log Out successfully');
+  };
+
   const subMenuLogin =
     viewer.id && viewer.avatar ? (
       <SubMenu title={<Avatar src={viewer.avatar} />}>
         <Item key='/user'>
-          <UserOutlined />
-          Profile
+          <Link to={`/user/${viewer.id}`}>
+            <UserOutlined />
+            Profile
+          </Link>
         </Item>
         <Item key='/logout'>
-          <LogoutOutlined />
-          Log Out
+          <div onClick={handleLogOut}>
+            <LogoutOutlined />
+            Log Out
+          </div>
         </Item>
       </SubMenu>
     ) : (
