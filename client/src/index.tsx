@@ -5,6 +5,7 @@ import ApolloClient from 'apollo-boost';
 import { ApolloProvider } from 'react-apollo';
 import { Layout } from 'antd';
 import {
+  AppHeader,
   Home,
   Host,
   Listing,
@@ -34,6 +35,7 @@ const App = () => {
   return (
     <Router>
       <Layout id='app'>
+        <AppHeader />
         <Switch>
           <Route exact path='/' component={Home} />
           <Route exact path='/host' component={Host} />
